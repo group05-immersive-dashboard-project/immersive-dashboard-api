@@ -2,6 +2,12 @@ package database
 
 import (
 	"alta-immersive-dashboard/app/config"
+	classModel "alta-immersive-dashboard/features/class/repository"
+	feedbackModel "alta-immersive-dashboard/features/feedback/repository"
+	menteeModel "alta-immersive-dashboard/features/mentee/repository"
+	statusModel "alta-immersive-dashboard/features/status/repository"
+	teamModel "alta-immersive-dashboard/features/team/repository"
+	userModel "alta-immersive-dashboard/features/user/repository"
 	"fmt"
 
 	"gorm.io/driver/mysql"
@@ -17,4 +23,13 @@ func InitMysql(cfg *config.AppConfig) *gorm.DB {
 		panic(err)
 	}
 	return DB
+}
+
+func InitialMigration(DB *gorm.DB) {
+	DB.AutoMigrate(&feedbackModel.Feedback{})
+	DB.AutoMigrate(&menteeModel.Mentee{})
+	DB.AutoMigrate(&statusModel.Status{})
+	DB.AutoMigrate(&classModel.Class{})
+	DB.AutoMigrate(&userModel.User{})
+	DB.AutoMigrate(&teamModel.Team{})
 }

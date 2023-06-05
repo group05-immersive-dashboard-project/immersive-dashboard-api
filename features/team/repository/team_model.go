@@ -9,5 +9,5 @@ import (
 type Team struct {
 	gorm.Model
 	TeamName string           `gorm:"team_name;not null"`
-	Users    []userModel.User `gorm:"foreignKey:TeamID;column:users"`
+	Users    []userModel.User `gorm:"foreignKey:TeamID"`
 }

@@ -17,6 +17,7 @@ type Mentee struct {
 	CurrentAddress  string                   `gorm:"column:current_address"`
 	HomeAddress     string                   `gorm:"column:home_address"`
 	Telegram        string                   `gorm:"column:telegram"`
+	Discord         string                   `gorm:"column:discord"`
 	Gender          string                   `gorm:"type:enum('male','female');default:'male';column:gender;not null"`
 	EducationType   string                   `gorm:"type:enum('informatics','non-informatics');default:'informatics';column:education_type;not null"`
 	Major           string                   `gorm:"column:major"`
@@ -25,5 +26,5 @@ type Mentee struct {
 	EmergencyName   string                   `gorm:"column:emergency_name"`
 	EmergencyPhone  string                   `gorm:"column:emergency_phone;unique"`
 	EmergencyStatus string                   `gorm:"type:enum('parent','grandparents', 'parents brother');default:'parent';column:emergency_status;not null"`
-	Feedbacks       []feedbackModel.Feedback `gorm:"foreignKey:MenteeID;column:feedbacks"`
+	Feedbacks       []feedbackModel.Feedback `gorm:"foreignKey:MenteeID"`
 }

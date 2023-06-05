@@ -12,5 +12,5 @@ type Class struct {
 	Name         string               `gorm:"column:class_name;not null"`
 	StartDate    string               `gorm:"column:start_date;not null"`
 	GraduateDate string               `gorm:"column:graduate_date;not null"`
-	Mentees      []menteeModel.Mentee `gorm:"foreignKey:ClassID;column:mentees"`
+	Mentees      []menteeModel.Mentee `gorm:"foreignKey:ClassID"`
 }
