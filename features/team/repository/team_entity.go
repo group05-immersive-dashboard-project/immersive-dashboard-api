@@ -13,3 +13,20 @@ type TeamEntity struct {
 	DeletedAt time.Time               `json:"deleted_at,omitempty" form:"deleted_at"`
 	Users     []userEntity.UserEntity `json:"users,omitempty"`
 }
+
+func ModelToEntity(team Team) TeamEntity {
+	// Convert user models to user entities
+	var userEntities []userEntity.UserEntity
+	for _, user := range team.Users {
+		userEntities = append(userEntities, userEntity.ModelToEntity(user))
+	}
+
+	return TeamEntity{
+		ID:        team.ID,
+		TeamName:  team.TeamName,
+		CreatedAt: team.CreatedAt,
+		UpdatedAt: team.UpdatedAt,
+		DeletedAt: team.DeletedAt.Time,
+		Users:     userEntities,
+	}
+}

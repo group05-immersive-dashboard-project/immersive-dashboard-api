@@ -14,3 +14,19 @@ type Class struct {
 	GraduateDate string               `gorm:"column:graduate_date;not null"`
 	Mentees      []menteeModel.Mentee `gorm:"foreignKey:ClassID"`
 }
+
+func EntityToModel(class ClassEntity) Class {
+	// Convert mentee entities to mentee models
+	var menteeModels []menteeModel.Mentee
+	for _, mentee := range class.Mentees {
+		menteeModels = append(menteeModels, menteeModel.EntityToModel(mentee))
+	}
+
+	return Class{
+		UserID:       class.UserID,
+		Name:         class.Name,
+		StartDate:    class.StartDate,
+		GraduateDate: class.GraduateDate,
+		Mentees:      menteeModels,
+	}
+}

@@ -10,3 +10,13 @@ type Feedback struct {
 	Notes    string `gorm:"column:notes;not null"`
 	Proof    string `gorm:"column:proofs;not null"`
 }
+
+func EntityToModel(feedback FeedbackEntity) Feedback {
+	return Feedback{
+		MenteeID: feedback.MenteeID,
+		StatusID: feedback.StatusID,
+		UserID:   feedback.UserID,
+		Notes:    feedback.Notes,
+		Proof:    feedback.Proof,
+	}
+}

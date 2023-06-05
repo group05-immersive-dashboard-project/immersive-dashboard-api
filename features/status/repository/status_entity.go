@@ -15,3 +15,27 @@ type StatusEntity struct {
 	Mentees    []menteeEntity.MenteeEntity     `json:"mentees,omitempty"`
 	Feedbacks  []feedbackEntity.FeedbackEntity `json:"feedbacks,omitempty"`
 }
+
+func ModelToEntity(status Status) StatusEntity {
+	// Convert mentee models to mentee entities
+	var menteeEntities []menteeEntity.MenteeEntity
+	for _, mentee := range status.Mentees {
+		menteeEntities = append(menteeEntities, menteeEntity.ModelToEntity(mentee))
+	}
+
+	// Convert feedback models to Feedback entities
+	var feedbackEntities []feedbackEntity.FeedbackEntity
+	for _, feedback := range status.Feedbacks {
+		feedbackEntities = append(feedbackEntities, feedbackEntity.ModelToEntity(feedback))
+	}
+
+	return StatusEntity{
+		ID:         status.ID,
+		StatusName: status.StatusName,
+		CreatedAt:  status.CreatedAt,
+		UpdatedAt:  status.UpdatedAt,
+		DeletedAt:  status.DeletedAt.Time,
+		Mentees:    menteeEntities,
+		Feedbacks:  feedbackEntities,
+	}
+}

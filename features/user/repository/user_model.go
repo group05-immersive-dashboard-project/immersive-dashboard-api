@@ -18,3 +18,28 @@ type User struct {
 	Classes   []classModel.Class       `gorm:"foreignKey:UserID"`
 	Feedbacks []feedbackModel.Feedback `gorm:"foreignKey:UserID"`
 }
+
+func EntityToModel(user UserEntity) User {
+	// Convert class entities to class models
+	var classModels []classModel.Class
+	for _, class := range user.Classes {
+		classModels = append(classModels, classModel.EntityToModel(class))
+	}
+
+	// Convert feedback entities to feedback models
+	var feedbackModels []feedbackModel.Feedback
+	for _, feedback := range user.Feedbacks {
+		feedbackModels = append(feedbackModels, feedbackModel.EntityToModel(feedback))
+	}
+
+	return User{
+		TeamID:    user.TeamID,
+		FullName:  user.FullName,
+		Email:     user.Email,
+		Password:  user.Password,
+		Status:    user.Status,
+		Role:      user.Role,
+		Classes:   classModels,
+		Feedbacks: feedbackModels,
+	}
+}

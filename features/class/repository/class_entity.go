@@ -18,11 +18,12 @@ type ClassEntity struct {
 }
 
 func ModelToEntity(class Class) ClassEntity {
-	// Convert mentee model to mentee entity
+	// Convert mentee models to mentee entities
 	var menteeEntities []menteeEntity.MenteeEntity
 	for _, mentee := range class.Mentees {
 		menteeEntities = append(menteeEntities, menteeEntity.ModelToEntity(mentee))
 	}
+
 	return ClassEntity{
 		ID:           class.ID,
 		UserID:       class.UserID,

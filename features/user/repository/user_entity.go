@@ -27,6 +27,13 @@ func ModelToEntity(user User) UserEntity {
 	for _, class := range user.Classes {
 		classEntities = append(classEntities, classEntity.ModelToEntity(class))
 	}
+
+	// Convert feedback models to Feedback entities
+	var feedbackEntities []feedbackEntity.FeedbackEntity
+	for _, feedback := range user.Feedbacks {
+		feedbackEntities = append(feedbackEntities, feedbackEntity.ModelToEntity(feedback))
+	}
+
 	return UserEntity{
 		ID:        user.ID,
 		TeamID:    user.TeamID,
@@ -39,5 +46,6 @@ func ModelToEntity(user User) UserEntity {
 		UpdatedAt: user.UpdatedAt,
 		DeletedAt: user.DeletedAt.Time,
 		Classes:   classEntities,
+		Feedbacks: feedbackEntities,
 	}
 }

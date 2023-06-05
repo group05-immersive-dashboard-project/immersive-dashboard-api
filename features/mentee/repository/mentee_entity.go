@@ -32,7 +32,7 @@ type MenteeEntity struct {
 }
 
 func ModelToEntity(mentee Mentee) MenteeEntity {
-	// Convert feedbacks to FeedbackEntities
+	// Convert feedback models to Feedback entities
 	var feedbackEntities []feedbackEntity.FeedbackEntity
 	for _, feedback := range mentee.Feedbacks {
 		feedbackEntities = append(feedbackEntities, feedbackEntity.ModelToEntity(feedback))

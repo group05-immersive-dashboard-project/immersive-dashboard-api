@@ -28,3 +28,33 @@ type Mentee struct {
 	EmergencyStatus string                   `gorm:"type:enum('parent','grandparents', 'parents brother');default:'parent';column:emergency_status;not null"`
 	Feedbacks       []feedbackModel.Feedback `gorm:"foreignKey:MenteeID"`
 }
+
+func EntityToModel(mentee MenteeEntity) Mentee {
+	// Convert feedback entities to feedback models
+	var feedbackModels []feedbackModel.Feedback
+	for _, feedback := range mentee.Feedbacks {
+		feedbackModels = append(feedbackModels, feedbackModel.EntityToModel(feedback))
+	}
+
+	return Mentee{
+		StatusID:        mentee.StatusID,
+		ClassID:         mentee.ClassID,
+		FullName:        mentee.FullName,
+		NickName:        mentee.NickName,
+		Email:           mentee.Email,
+		Phone:           mentee.Phone,
+		CurrentAddress:  mentee.CurrentAddress,
+		HomeAddress:     mentee.HomeAddress,
+		Telegram:        mentee.Telegram,
+		Discord:         mentee.Discord,
+		Gender:          mentee.Gender,
+		EducationType:   mentee.EducationType,
+		Major:           mentee.Major,
+		Graduate:        mentee.Graduate,
+		Institution:     mentee.Institution,
+		EmergencyName:   mentee.EmergencyName,
+		EmergencyPhone:  mentee.EmergencyPhone,
+		EmergencyStatus: mentee.EmergencyStatus,
+		Feedbacks:       feedbackModels,
+	}
+}
