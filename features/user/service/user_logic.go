@@ -3,6 +3,7 @@ package service
 import (
 	userRepo "alta-immersive-dashboard/features/user/repository"
 	"errors"
+	"fmt"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -13,8 +14,23 @@ type userService struct {
 }
 
 // CreateUser implements UserService.
-func (us *userService) CreateUser(user userRepo.UserEntity) error {
-	panic("unimplemented")
+func (us *userService) CreateUser(user userRepo.UserEntity) (uint, error) {
+	if user.FullName == "" {
+		return 0, errors.New("error, name is required")
+	}
+	if user.Email == "" {
+		return 0, errors.New("error, email is required")
+	}
+	if user.Password == "" {
+		return 0, errors.New("error, password is required")
+	}
+
+	userID, err := us.userRepository.Insert(user)
+	if err != nil {
+		return 0, fmt.Errorf("%v", err)
+	}
+
+	return userID, nil
 }
 
 // DeleteUser implements UserService.
@@ -29,7 +45,11 @@ func (us *userService) GetAllUser() ([]userRepo.UserEntity, error) {
 
 // GetUser implements UserService.
 func (us *userService) GetUser(userID uint) (userRepo.UserEntity, error) {
-	panic("unimplemented")
+	userEntity, err := us.userRepository.Select(userID)
+	if err != nil {
+		return userRepo.UserEntity{}, fmt.Errorf("error: %v", err)
+	}
+	return userEntity, nil
 }
 
 // Login implements UserService.

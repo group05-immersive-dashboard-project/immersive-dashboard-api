@@ -5,7 +5,7 @@ import (
 )
 
 type UserService interface {
-	CreateUser(user userEntity.UserEntity) error
+	CreateUser(user userEntity.UserEntity) (uint, error)
 	GetUser(userID uint) (userEntity.UserEntity, error)
 	GetAllUser() ([]userEntity.UserEntity, error)
 	UpdateUser(userID uint, updatedUser userEntity.UserEntity) error

@@ -1,6 +1,7 @@
 package router
 
 import (
+	"alta-immersive-dashboard/app/middlewares"
 	usrCtrl "alta-immersive-dashboard/features/user/controllers"
 	usrRepo "alta-immersive-dashboard/features/user/repository"
 	usrSrv "alta-immersive-dashboard/features/user/service"
@@ -17,5 +18,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	usersGroup := e.Group("/users")
 	{
 		usersGroup.POST("/login", userHandlerAPI.LoginUser)
+		usersGroup.POST("/admin", userHandlerAPI.CreateUser)
+		usersGroup.POST("", userHandlerAPI.CreateUser, middlewares.JWTMiddlewareFunc(), middlewares.AdminAuth)
 	}
 }

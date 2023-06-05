@@ -1,7 +1,7 @@
 package repository
 
 type UserRepository interface {
-	Insert(user UserEntity) error
+	Insert(user UserEntity) (uint, error)
 	Select(userID uint) (UserEntity, error)
 	SelectAll(userID uint) ([]UserEntity, error)
 	Update(userID uint, updatedUser UserEntity) error

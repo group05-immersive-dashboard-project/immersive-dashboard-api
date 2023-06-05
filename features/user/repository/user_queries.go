@@ -4,6 +4,7 @@ import (
 	"alta-immersive-dashboard/app/middlewares"
 	"alta-immersive-dashboard/utils"
 	"errors"
+	"strings"
 
 	"gorm.io/gorm"
 )
@@ -18,8 +19,25 @@ func (uq *userQuery) Delete(userID uint) error {
 }
 
 // Insert implements UserRepository.
-func (uq *userQuery) Insert(user UserEntity) error {
-	panic("unimplemented")
+func (uq *userQuery) Insert(user UserEntity) (uint, error) {
+	userModel := EntityToModel(user)
+	userModel.Password = utils.HashPass(userModel.Password)
+
+	createOpr := uq.db.Create(&userModel)
+	if createOpr.Error != nil {
+		if strings.Contains(createOpr.Error.Error(), "email") {
+			return 0, errors.New("email already in use")
+		} else if strings.Contains(createOpr.Error.Error(), "phone") {
+			return 0, errors.New("phone already in use")
+		}
+		return 0, createOpr.Error
+	}
+
+	if createOpr.RowsAffected == 0 {
+		return 0, errors.New("failed to insert, row affected is 0")
+	}
+
+	return userModel.ID, nil
 }
 
 // Login implements UserRepository.
@@ -50,7 +68,16 @@ func (uq *userQuery) Login(email string, password string) (UserEntity, string, e
 
 // Select implements UserRepository.
 func (uq *userQuery) Select(userID uint) (UserEntity, error) {
-	panic("unimplemented")
+	var user User
+
+	queryResult := uq.db.Preload("Classes").Preload("Feedbacks").First(&user, userID)
+	if queryResult.Error != nil {
+		return UserEntity{}, queryResult.Error
+	}
+
+	userEntity := ModelToEntity(user)
+
+	return userEntity, nil
 }
 
 // SelectAll implements UserRepository.
