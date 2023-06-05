@@ -40,7 +40,12 @@ func (us *userService) DeleteUser(userID uint) error {
 
 // GetAllUser implements UserService.
 func (us *userService) GetAllUser() ([]userRepo.UserEntity, error) {
-	panic("unimplemented")
+	userEntities, err := us.userRepository.SelectAll()
+	if err != nil {
+		return nil, fmt.Errorf("error: %v", err)
+	}
+
+	return userEntities, nil
 }
 
 // GetUser implements UserService.

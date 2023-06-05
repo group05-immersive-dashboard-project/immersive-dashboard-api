@@ -21,6 +21,20 @@ func New(service userSrv.UserService) *userController {
 	}
 }
 
+func (uc *userController) ReadAllUser(c echo.Context) error {
+	users, err := uc.userService.GetAllUser()
+	if err != nil {
+		return c.JSON(http.StatusNotFound, utils.FailResponse("users not found", nil))
+	}
+
+	var userResponses []ReadUserResponse
+	for _, userEntity := range users {
+		userResponses = append(userResponses, EntityToReadUserResponse(userEntity))
+	}
+
+	return c.JSON(http.StatusOK, utils.SuccessResponse("success get all users", userResponses))
+}
+
 func (uc *userController) ReadUser(c echo.Context) error {
 	idParam := c.Param("user_id")
 	userID, err := strconv.Atoi(idParam)

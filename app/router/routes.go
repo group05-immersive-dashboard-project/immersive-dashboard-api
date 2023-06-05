@@ -20,5 +20,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 		usersGroup.POST("/login", userHandlerAPI.LoginUser)
 		usersGroup.POST("/admin", userHandlerAPI.CreateUser)
 		usersGroup.POST("", userHandlerAPI.CreateUser, middlewares.JWTMiddlewareFunc(), middlewares.AdminAuth)
+		usersGroup.GET("", userHandlerAPI.ReadAllUser)
+		usersGroup.GET("/:user_id", userHandlerAPI.ReadUser)
 	}
 }

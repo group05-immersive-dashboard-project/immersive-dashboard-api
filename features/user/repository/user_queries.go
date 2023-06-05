@@ -81,8 +81,21 @@ func (uq *userQuery) Select(userID uint) (UserEntity, error) {
 }
 
 // SelectAll implements UserRepository.
-func (uq *userQuery) SelectAll(userID uint) ([]UserEntity, error) {
-	panic("unimplemented")
+func (uq *userQuery) SelectAll() ([]UserEntity, error) {
+	var users []User
+
+	queryResult := uq.db.Preload("Classes").Preload("Feedbacks").Find(&users)
+	if queryResult.Error != nil {
+		return []UserEntity{}, queryResult.Error
+	}
+
+	var userEntities []UserEntity
+	for _, user := range users {
+		userEntity := ModelToEntity(user)
+		userEntities = append(userEntities, userEntity)
+	}
+
+	return userEntities, nil
 }
 
 // Update implements UserRepository.
