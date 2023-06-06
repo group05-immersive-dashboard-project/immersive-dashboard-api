@@ -45,17 +45,31 @@ func (cs *classService) DeleteClass(classID uint) error {
 
 // GetAllClass implements ClassService.
 func (cs *classService) GetAllClass() ([]classRepo.ClassEntity, error) {
-	panic("unimplemented")
+	classEntities, err := cs.classRepository.SelectAll()
+	if err != nil {
+		return nil, fmt.Errorf("error: %v", err)
+	}
+
+	return classEntities, nil
 }
 
 // GetClass implements ClassService.
 func (cs *classService) GetClass(classID uint) (classRepo.ClassEntity, error) {
-	panic("unimplemented")
+	classEntity, err := cs.classRepository.Select(classID)
+	if err != nil {
+		return classRepo.ClassEntity{}, fmt.Errorf("error: %v", err)
+	}
+	return classEntity, nil
 }
 
 // UpdateClass implements ClassService.
 func (cs *classService) UpdateClass(classID uint, updatedClass classRepo.ClassEntity) error {
-	panic("unimplemented")
+	err := cs.classRepository.Update(classID, updatedClass)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	return nil
 }
 
 func New(repo classRepo.ClassRepository) ClassService {

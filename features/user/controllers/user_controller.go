@@ -121,7 +121,7 @@ func (uc *userController) ReadAllUser(c echo.Context) error {
 		userResponses = append(userResponses, EntityToUserResponse(userEntity))
 	}
 
-	return c.JSON(http.StatusOK, utils.SuccessResponse("success get all users", userResponses))
+	return c.JSON(http.StatusOK, utils.SuccessResponse("users retrieved successfully", userResponses))
 }
 
 func (uc *userController) ReadUser(c echo.Context) error {
@@ -138,7 +138,7 @@ func (uc *userController) ReadUser(c echo.Context) error {
 
 	userResponse := EntityToUserResponse(user)
 
-	return c.JSON(http.StatusOK, utils.SuccessResponse("success get user", userResponse))
+	return c.JSON(http.StatusOK, utils.SuccessResponse("user retrieved successfully", userResponse))
 }
 
 func (uc *userController) CreateUser(c echo.Context) error {
