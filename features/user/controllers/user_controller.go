@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"alta-immersive-dashboard/app/middlewares"
 	userRepo "alta-immersive-dashboard/features/user/repository"
 	userSrv "alta-immersive-dashboard/features/user/service"
 	"alta-immersive-dashboard/utils"
@@ -19,6 +20,94 @@ func New(service userSrv.UserService) *userController {
 	return &userController{
 		userService: service,
 	}
+}
+
+func (uc *userController) UpdateUser(c echo.Context) error {
+	var updatedUser userRepo.UserEntity
+	err := c.Bind(&updatedUser)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.FailResponse("failed to bind user data", nil))
+	}
+
+	role := middlewares.ExtractRoleFromToken(c)
+	idParam := c.Param("user_id")
+
+	var userID int
+
+	if (role == "admin" || role == "user") && idParam == "" {
+		userID = middlewares.ExtractUserIDFromToken(c)
+
+	} else if role == "admin" && idParam != "" {
+		ID, err := strconv.Atoi(idParam)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, utils.FailResponse("invalid user ID", nil))
+		}
+		userID = ID
+	} else {
+		return c.JSON(http.StatusUnauthorized, utils.FailResponse("unauthorized access", nil))
+	}
+
+	err = uc.userService.UpdateUser(uint(userID), updatedUser)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, utils.FailResponse("status internal error", nil))
+	}
+
+	// Get user data for response
+	user, err := uc.userService.GetUser(uint(userID))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.FailResponse("user not found", nil))
+	}
+
+	userResponse := EntityToReadUserResponse(user)
+
+	return c.JSON(http.StatusOK, utils.SuccessResponse("user updated successfully", userResponse))
+}
+
+func (uc *userController) DeleteUser(c echo.Context) error {
+	role := middlewares.ExtractRoleFromToken(c)
+	idParam := c.Param("user_id")
+
+	var userID int
+
+	// Get user data for response
+	if (role == "admin" || role == "user") && idParam == "" {
+		userID = middlewares.ExtractUserIDFromToken(c)
+
+	} else if role == "admin" && idParam != "" {
+		ID, err := strconv.Atoi(idParam)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, utils.FailResponse("invalid user ID", nil))
+		}
+		userID = ID
+	} else {
+		return c.JSON(http.StatusUnauthorized, utils.FailResponse("unauthorized access", nil))
+	}
+
+	user, err := uc.userService.GetUser(uint(userID))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.FailResponse("user not found", nil))
+	}
+
+	// Update user status in database
+	updatedUser := userRepo.UserEntity{
+		Status: "deleted",
+	}
+	err = uc.userService.UpdateUser(uint(userID), updatedUser)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, utils.FailResponse("status internal error", nil))
+	}
+
+	// Delete user data from database
+	err = uc.userService.DeleteUser(uint(userID))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.FailResponse(err.Error(), nil))
+	}
+
+	// Response user
+	userResponse := EntityToReadUserResponse(user)
+	userResponse.Status = "deleted"
+
+	return c.JSON(http.StatusOK, utils.SuccessResponse("user deleted successfully", userResponse))
 }
 
 func (uc *userController) ReadAllUser(c echo.Context) error {

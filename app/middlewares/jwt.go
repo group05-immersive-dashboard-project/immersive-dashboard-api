@@ -21,7 +21,7 @@ func GenerateToken(userId int, role string) (string, error) {
 	claims["authorized"] = true
 	claims["userID"] = userId
 	claims["role"] = role
-	claims["exp"] = time.Now().Add(time.Hour * 1).Unix() //Token expires after 1 hour
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix() //Token expires after 24 hour
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(config.SECRET_JWT))
 }

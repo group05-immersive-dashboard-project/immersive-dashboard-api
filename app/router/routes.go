@@ -20,7 +20,11 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 		usersGroup.POST("/login", userHandlerAPI.LoginUser)
 		usersGroup.POST("/admin", userHandlerAPI.CreateUser)
 		usersGroup.POST("", userHandlerAPI.CreateUser, middlewares.JWTMiddlewareFunc(), middlewares.AdminAuth)
-		usersGroup.GET("", userHandlerAPI.ReadAllUser)
-		usersGroup.GET("/:user_id", userHandlerAPI.ReadUser)
+		usersGroup.GET("", userHandlerAPI.ReadAllUser, middlewares.JWTMiddlewareFunc())
+		usersGroup.GET("/:user_id", userHandlerAPI.ReadUser, middlewares.JWTMiddlewareFunc())
+		usersGroup.PUT("", userHandlerAPI.UpdateUser, middlewares.JWTMiddlewareFunc())
+		usersGroup.PUT("/:user_id", userHandlerAPI.UpdateUser, middlewares.JWTMiddlewareFunc())
+		usersGroup.DELETE("", userHandlerAPI.DeleteUser, middlewares.JWTMiddlewareFunc())
+		usersGroup.DELETE("/:user_id", userHandlerAPI.DeleteUser, middlewares.JWTMiddlewareFunc())
 	}
 }

@@ -35,7 +35,12 @@ func (us *userService) CreateUser(user userRepo.UserEntity) (uint, error) {
 
 // DeleteUser implements UserService.
 func (us *userService) DeleteUser(userID uint) error {
-	panic("unimplemented")
+	err := us.userRepository.Delete(userID)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	return nil
 }
 
 // GetAllUser implements UserService.
@@ -75,7 +80,12 @@ func (us *userService) Login(email string, password string) (userRepo.UserEntity
 
 // UpdateUser implements UserService.
 func (us *userService) UpdateUser(userID uint, updatedUser userRepo.UserEntity) error {
-	panic("unimplemented")
+	err := us.userRepository.Update(userID, updatedUser)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	return nil
 }
 
 func New(repo userRepo.UserRepository) UserService {

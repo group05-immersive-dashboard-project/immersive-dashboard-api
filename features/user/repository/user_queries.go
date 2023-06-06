@@ -15,7 +15,12 @@ type userQuery struct {
 
 // Delete implements UserRepository.
 func (uq *userQuery) Delete(userID uint) error {
-	panic("unimplemented")
+	deleteOpr := uq.db.Delete(&User{}, userID)
+	if deleteOpr.Error != nil {
+		return errors.New(deleteOpr.Error.Error() + ", failed to delete user")
+	}
+
+	return nil
 }
 
 // Insert implements UserRepository.
@@ -100,7 +105,23 @@ func (uq *userQuery) SelectAll() ([]UserEntity, error) {
 
 // Update implements UserRepository.
 func (uq *userQuery) Update(userID uint, updatedUser UserEntity) error {
-	panic("unimplemented")
+	var user User
+
+	queryResult := uq.db.First(&user, userID)
+	if queryResult.Error != nil {
+		return errors.New(queryResult.Error.Error() + ", failed to get user")
+	}
+	if updatedUser.Password != "" {
+		updatedUser.Password = utils.HashPass(updatedUser.Password)
+	}
+
+	userToUpdate := EntityToModel(updatedUser)
+	updateOpr := uq.db.Model(&user).Updates(userToUpdate)
+	if updateOpr.Error != nil {
+		return errors.New(updateOpr.Error.Error() + ", failed to update user")
+	}
+
+	return nil
 }
 
 func New(db *gorm.DB) UserRepository {
