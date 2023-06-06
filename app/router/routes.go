@@ -38,5 +38,9 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	classesGroup := e.Group("/classes")
 	{
 		classesGroup.POST("", classHandlerAPI.CreateClass, middlewares.JWTMiddlewareFunc())
+		classesGroup.GET("", classHandlerAPI.ReadAllClass, middlewares.JWTMiddlewareFunc())
+		classesGroup.GET("/:class_id", classHandlerAPI.ReadClass, middlewares.JWTMiddlewareFunc())
+		classesGroup.PUT("/:class_id", classHandlerAPI.UpdateClass, middlewares.JWTMiddlewareFunc())
+		classesGroup.DELETE("/:class_id", classHandlerAPI.DeleteClass, middlewares.JWTMiddlewareFunc())
 	}
 }
