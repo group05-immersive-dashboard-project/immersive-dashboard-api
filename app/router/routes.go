@@ -2,6 +2,9 @@ package router
 
 import (
 	"alta-immersive-dashboard/app/middlewares"
+	clsCtrl "alta-immersive-dashboard/features/class/controllers"
+	clsRepo "alta-immersive-dashboard/features/class/repository"
+	clsSrv "alta-immersive-dashboard/features/class/service"
 	usrCtrl "alta-immersive-dashboard/features/user/controllers"
 	usrRepo "alta-immersive-dashboard/features/user/repository"
 	usrSrv "alta-immersive-dashboard/features/user/service"
@@ -26,5 +29,14 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 		usersGroup.PUT("/:user_id", userHandlerAPI.UpdateUser, middlewares.JWTMiddlewareFunc())
 		usersGroup.DELETE("", userHandlerAPI.DeleteUser, middlewares.JWTMiddlewareFunc())
 		usersGroup.DELETE("/:user_id", userHandlerAPI.DeleteUser, middlewares.JWTMiddlewareFunc())
+	}
+
+	classRepo := clsRepo.New(db)
+	classService := clsSrv.New(classRepo)
+	classHandlerAPI := clsCtrl.New(classService)
+
+	classesGroup := e.Group("/classes")
+	{
+		classesGroup.POST("", classHandlerAPI.CreateClass, middlewares.JWTMiddlewareFunc())
 	}
 }

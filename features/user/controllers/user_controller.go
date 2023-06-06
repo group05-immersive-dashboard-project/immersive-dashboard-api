@@ -58,7 +58,7 @@ func (uc *userController) UpdateUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, utils.FailResponse("user not found", nil))
 	}
 
-	userResponse := EntityToReadUserResponse(user)
+	userResponse := EntityToUserResponse(user)
 
 	return c.JSON(http.StatusOK, utils.SuccessResponse("user updated successfully", userResponse))
 }
@@ -104,7 +104,7 @@ func (uc *userController) DeleteUser(c echo.Context) error {
 	}
 
 	// Response user
-	userResponse := EntityToReadUserResponse(user)
+	userResponse := EntityToUserResponse(user)
 	userResponse.Status = "deleted"
 
 	return c.JSON(http.StatusOK, utils.SuccessResponse("user deleted successfully", userResponse))
@@ -116,9 +116,9 @@ func (uc *userController) ReadAllUser(c echo.Context) error {
 		return c.JSON(http.StatusNotFound, utils.FailResponse("users not found", nil))
 	}
 
-	var userResponses []ReadUserResponse
+	var userResponses []UserResponse
 	for _, userEntity := range users {
-		userResponses = append(userResponses, EntityToReadUserResponse(userEntity))
+		userResponses = append(userResponses, EntityToUserResponse(userEntity))
 	}
 
 	return c.JSON(http.StatusOK, utils.SuccessResponse("success get all users", userResponses))
@@ -136,7 +136,7 @@ func (uc *userController) ReadUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, utils.FailResponse("user not found", nil))
 	}
 
-	userResponse := EntityToReadUserResponse(user)
+	userResponse := EntityToUserResponse(user)
 
 	return c.JSON(http.StatusOK, utils.SuccessResponse("success get user", userResponse))
 }
@@ -158,7 +158,7 @@ func (uc *userController) CreateUser(c echo.Context) error {
 		}
 	}
 	user.ID = userID
-	userResponse := EntityToReadUserResponse(user)
+	userResponse := EntityToUserResponse(user)
 
 	return c.JSON(http.StatusOK, utils.SuccessResponse("user created successfully", userResponse))
 }
