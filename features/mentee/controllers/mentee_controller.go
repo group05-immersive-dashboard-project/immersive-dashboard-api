@@ -87,9 +87,9 @@ func (mc *menteeController) ReadAllMentee(c echo.Context) error {
 	var err error
 
 	if filters.IsEmpty() {
-		mentees, err = mc.menteeService.GetAllMenteeByFilters(filters)
-	} else {
 		mentees, err = mc.menteeService.GetAllMentee()
+	} else {
+		mentees, err = mc.menteeService.GetAllMenteeByFilters(filters)
 	}
 
 	if err != nil {
@@ -99,6 +99,10 @@ func (mc *menteeController) ReadAllMentee(c echo.Context) error {
 	var menteeResponses []CreateDeleteMenteeResponse
 	for _, menteeEntity := range mentees {
 		menteeResponses = append(menteeResponses, EntityToCreateDeleteMenteeResponse(menteeEntity))
+	}
+
+	if len(menteeResponses) == 0 {
+		return c.JSON(http.StatusOK, utils.SuccessResponse("mentees not found", nil))
 	}
 
 	return c.JSON(http.StatusOK, utils.SuccessResponse("mentees retrieved successfully", menteeResponses))

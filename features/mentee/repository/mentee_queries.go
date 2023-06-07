@@ -91,6 +91,14 @@ func (mq *menteeQuery) SelectAllByFilters(filters MenteeFilter) ([]MenteeEntity,
 	query := mq.db.Preload("Feedbacks")
 
 	switch {
+	case filters.ClassID == "" && filters.StatusID == "":
+		query = query.Where("education_type = ?", filters.Category)
+	case filters.ClassID == "" && filters.Category == "":
+		statusID, _ := convertStatusID(filters.StatusID)
+		query = query.Where("status_id = ?", statusID)
+	case filters.StatusID == "" && filters.Category == "":
+		classID, _ := convertClassID(filters.ClassID)
+		query = query.Where("class_id = ?", classID)
 	case filters.ClassID == "":
 		statusID, _ := convertStatusID(filters.StatusID)
 		query = query.Where("status_id = ? AND education_type = ?", statusID, filters.Category)
@@ -101,14 +109,6 @@ func (mq *menteeQuery) SelectAllByFilters(filters MenteeFilter) ([]MenteeEntity,
 		statusID, _ := convertStatusID(filters.StatusID)
 		classID, _ := convertClassID(filters.ClassID)
 		query = query.Where("class_id = ? AND status_id = ?", statusID, classID)
-	case filters.ClassID == "" && filters.StatusID == "":
-		query = query.Where("education_type = ?", filters.Category)
-	case filters.ClassID == "" && filters.Category == "":
-		statusID, _ := convertStatusID(filters.StatusID)
-		query = query.Where("status_id = ?", statusID)
-	case filters.StatusID == "" && filters.Category == "":
-		classID, _ := convertClassID(filters.ClassID)
-		query = query.Where("class_id = ?", classID)
 	}
 
 	queryResult := query.Find(&mentees)
