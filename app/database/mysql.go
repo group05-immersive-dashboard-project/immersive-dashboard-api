@@ -28,12 +28,25 @@ func InitMysql(cfg *config.AppConfig) *gorm.DB {
 }
 
 func InitialMigration(DB *gorm.DB) {
-	DB.AutoMigrate(&feedbackRepo.Feedback{})
-	DB.AutoMigrate(&menteeRepo.Mentee{})
-	DB.AutoMigrate(&statusRepo.Status{})
-	DB.AutoMigrate(&classRepo.Class{})
-	DB.AutoMigrate(&userRepo.User{})
 	DB.AutoMigrate(&teamRepo.Team{})
+	DB.AutoMigrate(&userRepo.User{})
+	DB.AutoMigrate(&classRepo.Class{})
+	DB.AutoMigrate(&statusRepo.Status{})
+	DB.AutoMigrate(&menteeRepo.Mentee{})
+	DB.AutoMigrate(&feedbackRepo.Feedback{})
+}
+
+func InitialTeamData(db *gorm.DB) {
+	teams := []teamRepo.Team{
+		{TeamName: "Manager"},
+		{TeamName: "Mentor"},
+		{TeamName: "Placement Team"},
+		{TeamName: "People Skill Team"},
+	}
+
+	for _, team := range teams {
+		db.Create(&team)
+	}
 }
 
 func InitialUserData(db *gorm.DB) {
@@ -49,19 +62,6 @@ func InitialUserData(db *gorm.DB) {
 	user.Password = utils.HashPass(user.Password)
 
 	db.Create(&user)
-}
-
-func InitialTeamData(db *gorm.DB) {
-	teams := []teamRepo.Team{
-		{TeamName: "Manager"},
-		{TeamName: "Mentor"},
-		{TeamName: "Placement Team"},
-		{TeamName: "People Skill Team"},
-	}
-
-	for _, team := range teams {
-		db.Create(&team)
-	}
 }
 
 func InitialStatusData(db *gorm.DB) {
