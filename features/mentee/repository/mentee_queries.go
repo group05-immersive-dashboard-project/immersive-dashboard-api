@@ -12,7 +12,12 @@ type menteeQuery struct {
 
 // Delete implements MenteeRepository.
 func (mq *menteeQuery) Delete(menteeID uint) error {
-	panic("unimplemented")
+	deleteOpr := mq.db.Delete(&Mentee{}, menteeID)
+	if deleteOpr.Error != nil {
+		return errors.New(deleteOpr.Error.Error() + ", failed to delete mentee")
+	}
+
+	return nil
 }
 
 // Insert implements MenteeRepository.
@@ -47,12 +52,38 @@ func (mq *menteeQuery) Select(menteeID uint) (MenteeEntity, error) {
 
 // SelectAll implements MenteeRepository.
 func (mq *menteeQuery) SelectAll() ([]MenteeEntity, error) {
-	panic("unimplemented")
+	var mentees []Mentee
+
+	queryResult := mq.db.Preload("Feedbacks").Find(&mentees)
+	if queryResult.Error != nil {
+		return []MenteeEntity{}, queryResult.Error
+	}
+
+	var menteeEntities []MenteeEntity
+	for _, mentee := range mentees {
+		claasEntity := ModelToEntity(mentee)
+		menteeEntities = append(menteeEntities, claasEntity)
+	}
+
+	return menteeEntities, nil
 }
 
 // Update implements MenteeRepository.
 func (mq *menteeQuery) Update(menteeID uint, updatedMentee MenteeEntity) error {
-	panic("unimplemented")
+	var mentee Mentee
+
+	queryResult := mq.db.First(&mentee, menteeID)
+	if queryResult.Error != nil {
+		return errors.New(queryResult.Error.Error() + ", failed to get mentee")
+	}
+
+	menteeToUpdate := EntityToModel(updatedMentee)
+	updateOpr := mq.db.Model(&mentee).Updates(menteeToUpdate)
+	if updateOpr.Error != nil {
+		return errors.New(updateOpr.Error.Error() + ", failed to update mentee")
+	}
+
+	return nil
 }
 
 func New(db *gorm.DB) MenteeRepository {

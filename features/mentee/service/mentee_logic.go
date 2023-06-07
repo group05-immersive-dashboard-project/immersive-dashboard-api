@@ -59,22 +59,41 @@ func (ms *menteeService) CreateMentee(mentee menteeRepo.MenteeEntity) (uint, err
 
 // DeleteMentee implements MenteeService.
 func (ms *menteeService) DeleteMentee(menteeID uint) error {
-	panic("unimplemented")
+	err := ms.menteeRepository.Delete(menteeID)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	return nil
 }
 
 // GetAllMentee implements MenteeService.
 func (ms *menteeService) GetAllMentee() ([]menteeRepo.MenteeEntity, error) {
-	panic("unimplemented")
+	menteeEntities, err := ms.menteeRepository.SelectAll()
+	if err != nil {
+		return nil, fmt.Errorf("error: %v", err)
+	}
+
+	return menteeEntities, nil
 }
 
 // GetMentee implements MenteeService.
 func (ms *menteeService) GetMentee(menteeID uint) (menteeRepo.MenteeEntity, error) {
-	panic("unimplemented")
+	menteeEntity, err := ms.menteeRepository.Select(menteeID)
+	if err != nil {
+		return menteeRepo.MenteeEntity{}, fmt.Errorf("error: %v", err)
+	}
+	return menteeEntity, nil
 }
 
 // UpdateMentee implements MenteeService.
 func (ms *menteeService) UpdateMentee(menteeID uint, updatedMentee menteeRepo.MenteeEntity) error {
-	panic("unimplemented")
+	err := ms.menteeRepository.Update(menteeID, updatedMentee)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	return nil
 }
 
 func New(repo menteeRepo.MenteeRepository) MenteeService {

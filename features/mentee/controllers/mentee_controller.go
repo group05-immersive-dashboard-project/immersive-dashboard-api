@@ -5,6 +5,7 @@ import (
 	menteeSrv "alta-immersive-dashboard/features/mentee/service"
 	"alta-immersive-dashboard/utils"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/labstack/echo/v4"
@@ -40,4 +41,87 @@ func (mc *menteeController) CreateMentee(c echo.Context) error {
 	menteeResponse := EntityToCreateDeleteMenteeResponse(mentee)
 
 	return c.JSON(http.StatusOK, utils.SuccessResponse("mentee created successfully", menteeResponse))
+}
+
+func (mc *menteeController) ReadMentee(c echo.Context) error {
+	idParam := c.Param("mentee_id")
+	menteeID, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.FailResponse("invalid mentee ID", nil))
+	}
+
+	mentee, err := mc.menteeService.GetMentee(uint(menteeID))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.FailResponse("mentee not found", nil))
+	}
+
+	menteeResponse := EntityToReadUpdateMenteeResponse(mentee)
+
+	return c.JSON(http.StatusOK, utils.SuccessResponse("mentee retrieved successfully", menteeResponse))
+}
+
+func (mc *menteeController) ReadAllMentee(c echo.Context) error {
+	mentees, err := mc.menteeService.GetAllMentee()
+	if err != nil {
+		return c.JSON(http.StatusNotFound, utils.FailResponse("mentees not found", nil))
+	}
+
+	var menteeResponses []CreateDeleteMenteeResponse
+	for _, menteeEntity := range mentees {
+		menteeResponses = append(menteeResponses, EntityToCreateDeleteMenteeResponse(menteeEntity))
+	}
+
+	return c.JSON(http.StatusOK, utils.SuccessResponse("classes retrieved successfully", menteeResponses))
+}
+
+func (mc *menteeController) DeleteMentee(c echo.Context) error {
+	idParam := c.Param("mentee_id")
+	menteeID, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.FailResponse("invalid mentee ID", nil))
+	}
+
+	mentee, err := mc.menteeService.GetMentee(uint(menteeID))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.FailResponse("mentee not found", nil))
+	}
+
+	// Delete mentee data from database
+	err = mc.menteeService.DeleteMentee(uint(menteeID))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.FailResponse(err.Error(), nil))
+	}
+
+	menteeResponse := EntityToCreateDeleteMenteeResponse(mentee)
+
+	return c.JSON(http.StatusOK, utils.SuccessResponse("mentee deleted successfully", menteeResponse))
+}
+
+func (mc *menteeController) UpdateMentee(c echo.Context) error {
+	var updatedMentee menteeRepo.MenteeEntity
+	err := c.Bind(&updatedMentee)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.FailResponse("failed to bind mentee data", nil))
+	}
+
+	idParam := c.Param("mentee_id")
+	menteeID, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.FailResponse("invalid mentee ID", nil))
+	}
+
+	err = mc.menteeService.UpdateMentee(uint(menteeID), updatedMentee)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, utils.FailResponse("status internal error", nil))
+	}
+
+	// Get mentee data for response
+	mentee, err := mc.menteeService.GetMentee(uint(menteeID))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.FailResponse("mentee not found", nil))
+	}
+
+	menteeResponse := EntityToReadUpdateMenteeResponse(mentee)
+
+	return c.JSON(http.StatusOK, utils.SuccessResponse("mentee updated successfully", menteeResponse))
 }
