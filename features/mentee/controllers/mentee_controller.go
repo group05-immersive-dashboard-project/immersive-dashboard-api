@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"alta-immersive-dashboard/features/mentee/repository"
 	menteeRepo "alta-immersive-dashboard/features/mentee/repository"
 	menteeSrv "alta-immersive-dashboard/features/mentee/service"
 	"alta-immersive-dashboard/utils"
@@ -76,7 +77,21 @@ func (mc *menteeController) ReadMenteeFeedbacks(c echo.Context) error {
 }
 
 func (mc *menteeController) ReadAllMentee(c echo.Context) error {
-	mentees, err := mc.menteeService.GetAllMentee()
+	filters := repository.MenteeFilter{
+		ClassID:  c.QueryParam("class_id"),
+		StatusID: c.QueryParam("status_id"),
+		Category: c.QueryParam("category"),
+	}
+
+	var mentees []menteeRepo.MenteeEntity
+	var err error
+
+	if filters.IsEmpty() {
+		mentees, err = mc.menteeService.GetAllMenteeByFilters(filters)
+	} else {
+		mentees, err = mc.menteeService.GetAllMentee()
+	}
+
 	if err != nil {
 		return c.JSON(http.StatusNotFound, utils.FailResponse("mentees not found", nil))
 	}
@@ -86,7 +101,7 @@ func (mc *menteeController) ReadAllMentee(c echo.Context) error {
 		menteeResponses = append(menteeResponses, EntityToCreateDeleteMenteeResponse(menteeEntity))
 	}
 
-	return c.JSON(http.StatusOK, utils.SuccessResponse("classes retrieved successfully", menteeResponses))
+	return c.JSON(http.StatusOK, utils.SuccessResponse("mentees retrieved successfully", menteeResponses))
 }
 
 func (mc *menteeController) DeleteMentee(c echo.Context) error {

@@ -77,12 +77,23 @@ func (ms *menteeService) GetAllMentee() ([]menteeRepo.MenteeEntity, error) {
 	return menteeEntities, nil
 }
 
+// GetAllMenteeByFilters implements MenteeService.
+func (ms *menteeService) GetAllMenteeByFilters(filters menteeRepo.MenteeFilter) ([]menteeRepo.MenteeEntity, error) {
+	menteeEntities, err := ms.menteeRepository.SelectAllByFilters(filters)
+	if err != nil {
+		return nil, fmt.Errorf("error: %v", err)
+	}
+
+	return menteeEntities, nil
+}
+
 // GetMentee implements MenteeService.
 func (ms *menteeService) GetMentee(menteeID uint) (menteeRepo.MenteeEntity, error) {
 	menteeEntity, err := ms.menteeRepository.Select(menteeID)
 	if err != nil {
 		return menteeRepo.MenteeEntity{}, fmt.Errorf("error: %v", err)
 	}
+
 	return menteeEntity, nil
 }
 

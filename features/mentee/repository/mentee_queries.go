@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"strconv"
 
 	"gorm.io/gorm"
 )
@@ -55,6 +56,62 @@ func (mq *menteeQuery) SelectAll() ([]MenteeEntity, error) {
 	var mentees []Mentee
 
 	queryResult := mq.db.Preload("Feedbacks").Find(&mentees)
+	if queryResult.Error != nil {
+		return []MenteeEntity{}, queryResult.Error
+	}
+
+	var menteeEntities []MenteeEntity
+	for _, mentee := range mentees {
+		claasEntity := ModelToEntity(mentee)
+		menteeEntities = append(menteeEntities, claasEntity)
+	}
+
+	return menteeEntities, nil
+}
+
+func convertClassID(ID string) (uint, error) {
+	classID, err := strconv.Atoi(ID)
+	if err != nil {
+		return 0, errors.New("invalid class id")
+	}
+	return uint(classID), nil
+}
+
+func convertStatusID(ID string) (uint, error) {
+	statusID, err := strconv.Atoi(ID)
+	if err != nil {
+		return 0, err
+	}
+	return uint(statusID), errors.New("invalid status id")
+}
+
+func (mq *menteeQuery) SelectAllByFilters(filters MenteeFilter) ([]MenteeEntity, error) {
+	var mentees []Mentee
+
+	query := mq.db.Preload("Feedbacks")
+
+	switch {
+	case filters.ClassID == "":
+		statusID, _ := convertStatusID(filters.StatusID)
+		query = query.Where("status_id = ? AND education_type = ?", statusID, filters.Category)
+	case filters.StatusID == "":
+		classID, _ := convertClassID(filters.ClassID)
+		query = query.Where("class_id = ? AND education_type = ?", classID, filters.Category)
+	case filters.Category == "":
+		statusID, _ := convertStatusID(filters.StatusID)
+		classID, _ := convertClassID(filters.ClassID)
+		query = query.Where("class_id = ? AND status_id = ?", statusID, classID)
+	case filters.ClassID == "" && filters.StatusID == "":
+		query = query.Where("education_type = ?", filters.Category)
+	case filters.ClassID == "" && filters.Category == "":
+		statusID, _ := convertStatusID(filters.StatusID)
+		query = query.Where("status_id = ?", statusID)
+	case filters.StatusID == "" && filters.Category == "":
+		classID, _ := convertClassID(filters.ClassID)
+		query = query.Where("class_id = ?", classID)
+	}
+
+	queryResult := query.Find(&mentees)
 	if queryResult.Error != nil {
 		return []MenteeEntity{}, queryResult.Error
 	}

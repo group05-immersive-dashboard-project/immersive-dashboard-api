@@ -5,6 +5,9 @@ import (
 	clsCtrl "alta-immersive-dashboard/features/class/controllers"
 	clsRepo "alta-immersive-dashboard/features/class/repository"
 	clsSrv "alta-immersive-dashboard/features/class/service"
+	fbCtrl "alta-immersive-dashboard/features/feedback/controllers"
+	fbRepo "alta-immersive-dashboard/features/feedback/repository"
+	fbSrv "alta-immersive-dashboard/features/feedback/service"
 	mntCtrl "alta-immersive-dashboard/features/mentee/controllers"
 	mntRepo "alta-immersive-dashboard/features/mentee/repository"
 	mntSrv "alta-immersive-dashboard/features/mentee/service"
@@ -60,5 +63,16 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 		menteesGroup.GET("/:mentee_id", menteeHandlerAPI.ReadMenteeFeedbacks, middlewares.JWTMiddlewareFunc())
 		menteesGroup.PUT("/:mentee_id", menteeHandlerAPI.UpdateMentee, middlewares.JWTMiddlewareFunc())
 		menteesGroup.DELETE("/:mentee_id", menteeHandlerAPI.DeleteMentee, middlewares.JWTMiddlewareFunc())
+	}
+
+	feedbackRepo := fbRepo.New(db)
+	feedbackService := fbSrv.New(feedbackRepo)
+	feedbackHandlerAPI := fbCtrl.New(feedbackService)
+
+	feedbacksGroup := e.Group("/feedbacks")
+	{
+		feedbacksGroup.POST("", feedbackHandlerAPI.CreateFeedback, middlewares.JWTMiddlewareFunc())
+		feedbacksGroup.PUT("", feedbackHandlerAPI.UpdateFeedback, middlewares.JWTMiddlewareFunc())
+		feedbacksGroup.DELETE("", feedbackHandlerAPI.DeleteFeedback, middlewares.JWTMiddlewareFunc())
 	}
 }

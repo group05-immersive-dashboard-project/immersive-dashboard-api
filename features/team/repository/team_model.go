@@ -8,7 +8,7 @@ import (
 
 type Team struct {
 	gorm.Model
-	TeamName string           `gorm:"team_name;not null"`
+	TeamName string           `gorm:"team_name;unique;not null"`
 	Users    []userModel.User `gorm:"foreignKey:TeamID"`
 }
 

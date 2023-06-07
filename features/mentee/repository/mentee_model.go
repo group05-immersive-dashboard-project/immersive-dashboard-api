@@ -16,7 +16,7 @@ type Mentee struct {
 	Phone           string                   `gorm:"column:phone;unique"`
 	CurrentAddress  string                   `gorm:"column:current_address"`
 	HomeAddress     string                   `gorm:"column:home_address"`
-	Telegram        string                   `gorm:"column:telegram"`
+	Telegram        string                   `gorm:"column:telegram;unique"`
 	Gender          string                   `gorm:"type:enum('male','female');default:'male';column:gender;not null"`
 	EducationType   string                   `gorm:"type:enum('informatics','non-informatics');default:'informatics';column:education_type;not null"`
 	Major           string                   `gorm:"column:major"`

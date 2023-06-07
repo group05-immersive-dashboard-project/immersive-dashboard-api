@@ -5,6 +5,7 @@ import (
 	feedbackSrv "alta-immersive-dashboard/features/feedback/service"
 	"alta-immersive-dashboard/utils"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/labstack/echo/v4"
@@ -41,31 +42,50 @@ func (fc *feedbackController) CreateFeedback(c echo.Context) error {
 	return c.JSON(http.StatusOK, utils.SuccessResponse("mentee created successfully", feedback))
 }
 
-// func (fc *feedbackController) UpdateFeedback(c echo.Context) error {
-// 	var updatedFeedback feedbackRepo.FeedbackEntity
-// 	err := c.Bind(&updatedFeedback)
-// 	if err != nil {
-// 		return c.JSON(http.StatusBadRequest, utils.FailResponse("failed to bind feedback data", nil))
-// 	}
+func (fc *feedbackController) UpdateFeedback(c echo.Context) error {
+	var updatedFeedback feedbackRepo.FeedbackEntity
+	err := c.Bind(&updatedFeedback)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.FailResponse("failed to bind feedback data", nil))
+	}
 
-// 	idParam := c.Param("feedback_id")
-// 	feedbackID, err := strconv.Atoi(idParam)
-// 	if err != nil {
-// 		return c.JSON(http.StatusBadRequest, utils.FailResponse("invalid feedback ID", nil))
-// 	}
+	idParam := c.Param("feedback_id")
+	feedbackID, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.FailResponse("invalid feedback ID", nil))
+	}
 
-// 	err = fc.feedbackService.UpdateFeedback(uint(feedbackID), updatedFeedback)
-// 	if err != nil {
-// 		return c.JSON(http.StatusInternalServerError, utils.FailResponse("status internal error", nil))
-// 	}
+	err = fc.feedbackService.UpdateFeedback(uint(feedbackID), updatedFeedback)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, utils.FailResponse("status internal error", nil))
+	}
 
-// 	// Get feedback data for response
-// 	feedback, err := fc.feedbackService.GetFeedback(uint(feedbackID))
-// 	if err != nil {
-// 		return c.JSON(http.StatusBadRequest, utils.FailResponse("feedback not found", nil))
-// 	}
+	// Get feedback data for response
+	feedback, err := fc.feedbackService.GetFeedback(uint(feedbackID))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.FailResponse("feedback not found", nil))
+	}
 
-// 	menteeResponse := EntityToReadUpdateMenteeResponse(mentee)
+	return c.JSON(http.StatusOK, utils.SuccessResponse("feedback updated successfully", feedback))
+}
 
-// 	return c.JSON(http.StatusOK, utils.SuccessResponse("feedback updated successfully", menteeResponse))
-// }
+func (fc *feedbackController) DeleteFeedback(c echo.Context) error {
+	idParam := c.Param("feedback_id")
+	feedbackID, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.FailResponse("invalid feedback ID", nil))
+	}
+
+	feedback, err := fc.feedbackService.GetFeedback(uint(feedbackID))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.FailResponse("feedback not found", nil))
+	}
+
+	// Delete feedback data from database
+	err = fc.feedbackService.DeleteFeedback(uint(feedbackID))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.FailResponse(err.Error(), nil))
+	}
+
+	return c.JSON(http.StatusOK, utils.SuccessResponse("mentee deleted successfully", feedback))
+}

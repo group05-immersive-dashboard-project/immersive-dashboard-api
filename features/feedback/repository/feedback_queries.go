@@ -10,6 +10,20 @@ type feedbackQuery struct {
 	db *gorm.DB
 }
 
+// Select implements FeedbackRepository.
+func (fq *feedbackQuery) Select(feedbackID uint) (FeedbackEntity, error) {
+	var feedback Feedback
+
+	queryResult := fq.db.First(&feedback, feedbackID)
+	if queryResult.Error != nil {
+		return FeedbackEntity{}, queryResult.Error
+	}
+
+	feedbackEntity := ModelToEntity(feedback)
+
+	return feedbackEntity, nil
+}
+
 // Delete implements FeedbackRepository.
 func (fq *feedbackQuery) Delete(feedbackID uint) error {
 	deleteOpr := fq.db.Delete(&Feedback{}, feedbackID)

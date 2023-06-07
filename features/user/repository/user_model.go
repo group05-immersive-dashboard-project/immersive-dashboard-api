@@ -11,7 +11,7 @@ type User struct {
 	gorm.Model
 	TeamID    uint                     `gorm:"column:team_id;not null"`
 	FullName  string                   `gorm:"column:full_name;not null"`
-	Email     string                   `gorm:"column:email;not null"`
+	Email     string                   `gorm:"column:email;unique;not null"`
 	Password  string                   `gorm:"column:password;not null"`
 	Status    string                   `gorm:"type:enum('active','inactive', 'deleted');default:'active';column:status;not null"`
 	Role      string                   `gorm:"type:enum('admin','user');default:'user';column:role;not null"`

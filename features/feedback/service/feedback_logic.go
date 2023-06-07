@@ -10,6 +10,16 @@ type feedbackService struct {
 	feedbackRepository feedbackRepo.FeedbackRepository
 }
 
+// GetFeedback implements FeedbackService.
+func (fs *feedbackService) GetFeedback(feedbackID uint) (feedbackRepo.FeedbackEntity, error) {
+	feedbackEntity, err := fs.feedbackRepository.Select(feedbackID)
+	if err != nil {
+		return feedbackRepo.FeedbackEntity{}, fmt.Errorf("error: %v", err)
+	}
+
+	return feedbackEntity, nil
+}
+
 // CreateFeedback implements FeedbackService.
 func (fs *feedbackService) CreateFeedback(feedback feedbackRepo.FeedbackEntity) (uint, error) {
 	switch {

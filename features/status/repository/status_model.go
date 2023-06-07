@@ -9,7 +9,7 @@ import (
 
 type Status struct {
 	gorm.Model
-	StatusName string                   `gorm:"status_name;not null"`
+	StatusName string                   `gorm:"status_name;unique;not null"`
 	Mentees    []menteeModel.Mentee     `gorm:"foreignKey:StatusID"`
 	Feedbacks  []feedbackModel.Feedback `gorm:"foreignKey:StatusID"`
 }
