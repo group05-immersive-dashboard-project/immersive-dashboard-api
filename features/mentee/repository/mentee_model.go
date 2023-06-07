@@ -17,7 +17,6 @@ type Mentee struct {
 	CurrentAddress  string                   `gorm:"column:current_address"`
 	HomeAddress     string                   `gorm:"column:home_address"`
 	Telegram        string                   `gorm:"column:telegram"`
-	Discord         string                   `gorm:"column:discord"`
 	Gender          string                   `gorm:"type:enum('male','female');default:'male';column:gender;not null"`
 	EducationType   string                   `gorm:"type:enum('informatics','non-informatics');default:'informatics';column:education_type;not null"`
 	Major           string                   `gorm:"column:major"`
@@ -46,7 +45,6 @@ func EntityToModel(mentee MenteeEntity) Mentee {
 		CurrentAddress:  mentee.CurrentAddress,
 		HomeAddress:     mentee.HomeAddress,
 		Telegram:        mentee.Telegram,
-		Discord:         mentee.Discord,
 		Gender:          mentee.Gender,
 		EducationType:   mentee.EducationType,
 		Major:           mentee.Major,

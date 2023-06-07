@@ -16,7 +16,6 @@ type MenteeEntity struct {
 	CurrentAddress  string                          `json:"current_address,omitempty" form:"current_address"`
 	HomeAddress     string                          `json:"home_address,omitempty" form:"home_address"`
 	Telegram        string                          `json:"telegram,omitempty" form:"telegram"`
-	Discord         string                          `json:"discord,omitempty" form:"discord"`
 	Gender          string                          `json:"gender,omitempty" form:"gender"`
 	EducationType   string                          `json:"education_type,omitempty" form:"education_type"`
 	Major           string                          `json:"major,omitempty" form:"major"`
@@ -49,7 +48,6 @@ func ModelToEntity(mentee Mentee) MenteeEntity {
 		CurrentAddress:  mentee.CurrentAddress,
 		HomeAddress:     mentee.HomeAddress,
 		Telegram:        mentee.Telegram,
-		Discord:         mentee.Discord,
 		Gender:          mentee.Gender,
 		EducationType:   mentee.EducationType,
 		Major:           mentee.Major,

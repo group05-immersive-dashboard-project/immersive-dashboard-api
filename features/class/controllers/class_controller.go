@@ -55,7 +55,7 @@ func (cc *classController) ReadClass(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, utils.FailResponse("class not found", nil))
 	}
 
-	classResponse := EntityToGetUpdateClassResponse(class)
+	classResponse := EntityToReadUpdateClassResponse(class)
 
 	return c.JSON(http.StatusOK, utils.SuccessResponse("class retrieved successfully", classResponse))
 }
@@ -66,9 +66,9 @@ func (cc *classController) ReadAllClass(c echo.Context) error {
 		return c.JSON(http.StatusNotFound, utils.FailResponse("classes not found", nil))
 	}
 
-	var classResponses []GetUpdateClassResponse
+	var classResponses []ReadUpdateClassResponse
 	for _, classEntity := range classes {
-		classResponses = append(classResponses, EntityToGetUpdateClassResponse(classEntity))
+		classResponses = append(classResponses, EntityToReadUpdateClassResponse(classEntity))
 	}
 
 	return c.JSON(http.StatusOK, utils.SuccessResponse("classes retrieved successfully", classResponses))
@@ -98,7 +98,7 @@ func (cc *classController) UpdateClass(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, utils.FailResponse("class not found", nil))
 	}
 
-	classResponse := EntityToGetUpdateClassResponse(class)
+	classResponse := EntityToReadUpdateClassResponse(class)
 
 	return c.JSON(http.StatusOK, utils.SuccessResponse("class updated successfully", classResponse))
 }

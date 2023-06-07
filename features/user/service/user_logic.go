@@ -15,14 +15,19 @@ type userService struct {
 
 // CreateUser implements UserService.
 func (us *userService) CreateUser(user userRepo.UserEntity) (uint, error) {
-	if user.FullName == "" {
-		return 0, errors.New("error, name is required")
-	}
-	if user.Email == "" {
-		return 0, errors.New("error, email is required")
-	}
-	if user.Password == "" {
-		return 0, errors.New("error, password is required")
+	err := us.validate.Struct(user)
+	if err != nil {
+		validationErrors := err.(validator.ValidationErrors)
+		for _, e := range validationErrors {
+			switch e.Field() {
+			case "FullName":
+				return 0, errors.New("error, name is required")
+			case "Email":
+				return 0, errors.New("error, invalid email format")
+			case "Password":
+				return 0, errors.New("error, password is required")
+			}
+		}
 	}
 
 	userID, err := us.userRepository.Insert(user)

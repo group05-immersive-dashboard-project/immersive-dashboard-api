@@ -9,9 +9,9 @@ import (
 type UserEntity struct {
 	ID        uint                            `json:"user_id,omitempty" form:"user_id"`
 	TeamID    uint                            `json:"team_id,omitempty" form:"team_id"`
-	FullName  string                          `json:"full_name,omitempty" form:"full_name"`
-	Email     string                          `json:"email,omitempty" form:"email"`
-	Password  string                          `json:"password,omitempty" form:"password"`
+	FullName  string                          `json:"full_name,omitempty" form:"full_name" validate:"required"`
+	Email     string                          `json:"email,omitempty" form:"email" validate:"required,email"`
+	Password  string                          `json:"password,omitempty" form:"password" validate:"required,min=8"`
 	Status    string                          `json:"status,omitempty" form:"status"`
 	Role      string                          `json:"role,omitempty" form:"role"`
 	CreatedAt time.Time                       `json:"created_at,omitempty" form:"created_at"`

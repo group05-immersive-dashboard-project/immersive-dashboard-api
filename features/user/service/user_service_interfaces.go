@@ -1,14 +1,14 @@
 package service
 
 import (
-	userEntity "alta-immersive-dashboard/features/user/repository"
+	userRepo "alta-immersive-dashboard/features/user/repository"
 )
 
 type UserService interface {
-	CreateUser(user userEntity.UserEntity) (uint, error)
-	GetUser(userID uint) (userEntity.UserEntity, error)
-	GetAllUser() ([]userEntity.UserEntity, error)
-	UpdateUser(userID uint, updatedUser userEntity.UserEntity) error
+	CreateUser(user userRepo.UserEntity) (uint, error)
+	GetUser(userID uint) (userRepo.UserEntity, error)
+	GetAllUser() ([]userRepo.UserEntity, error)
+	UpdateUser(userID uint, updatedUser userRepo.UserEntity) error
 	DeleteUser(userID uint) error
-	Login(email, password string) (userEntity.UserEntity, string, error)
+	Login(email, password string) (userRepo.UserEntity, string, error)
 }

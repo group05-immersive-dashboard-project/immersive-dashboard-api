@@ -12,7 +12,7 @@ type CreateDeleteClassResponse struct {
 }
 
 // Response for GET and PUT class
-type GetUpdateClassResponse struct {
+type ReadUpdateClassResponse struct {
 	ID           uint   `json:"class_id" form:"class_id"`
 	UserID       uint   `json:"user_id" form:"user_id"`
 	Name         string `json:"class_name" form:"class_name"`
@@ -28,8 +28,8 @@ func EntityToCreateDeleteClassResponse(class classRepo.ClassEntity) CreateDelete
 	}
 }
 
-func EntityToGetUpdateClassResponse(class classRepo.ClassEntity) GetUpdateClassResponse {
-	return GetUpdateClassResponse{
+func EntityToReadUpdateClassResponse(class classRepo.ClassEntity) ReadUpdateClassResponse {
+	return ReadUpdateClassResponse{
 		ID:           class.ID,
 		UserID:       class.UserID,
 		Name:         class.Name,
