@@ -60,6 +60,21 @@ func (mc *menteeController) ReadMentee(c echo.Context) error {
 	return c.JSON(http.StatusOK, utils.SuccessResponse("mentee retrieved successfully", menteeResponse))
 }
 
+func (mc *menteeController) ReadMenteeFeedbacks(c echo.Context) error {
+	idParam := c.Param("mentee_id")
+	menteeID, err := strconv.Atoi(idParam)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.FailResponse("invalid mentee ID", nil))
+	}
+
+	mentee, err := mc.menteeService.GetMentee(uint(menteeID))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, utils.FailResponse("mentee not found", nil))
+	}
+
+	return c.JSON(http.StatusOK, utils.SuccessResponse("mentee feedbacks retrieved successfully", mentee.Feedbacks))
+}
+
 func (mc *menteeController) ReadAllMentee(c echo.Context) error {
 	mentees, err := mc.menteeService.GetAllMentee()
 	if err != nil {
