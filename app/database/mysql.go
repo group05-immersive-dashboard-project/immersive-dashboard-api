@@ -2,15 +2,10 @@ package database
 
 import (
 	"alta-immersive-dashboard/app/config"
-	classRepo "alta-immersive-dashboard/features/class/repository"
-	feedbackRepo "alta-immersive-dashboard/features/feedback/repository"
-	menteeRepo "alta-immersive-dashboard/features/mentee/repository"
 	"alta-immersive-dashboard/utils"
 	"fmt"
 
-	statusRepo "alta-immersive-dashboard/features/status/repository"
-	teamRepo "alta-immersive-dashboard/features/team/repository"
-	userRepo "alta-immersive-dashboard/features/user/repository"
+	models "alta-immersive-dashboard/features"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -28,16 +23,16 @@ func InitMysql(cfg *config.AppConfig) *gorm.DB {
 }
 
 func InitialMigration(DB *gorm.DB) {
-	DB.AutoMigrate(&teamRepo.Team{})
-	DB.AutoMigrate(&userRepo.User{})
-	DB.AutoMigrate(&classRepo.Class{})
-	DB.AutoMigrate(&statusRepo.Status{})
-	DB.AutoMigrate(&menteeRepo.Mentee{})
-	DB.AutoMigrate(&feedbackRepo.Feedback{})
+	DB.AutoMigrate(&models.Team{})
+	DB.AutoMigrate(&models.User{})
+	DB.AutoMigrate(&models.Class{})
+	DB.AutoMigrate(&models.Status{})
+	DB.AutoMigrate(&models.Mentee{})
+	DB.AutoMigrate(&models.Feedback{})
 }
 
 func InitialTeamData(db *gorm.DB) {
-	teams := []teamRepo.Team{
+	teams := []models.Team{
 		{TeamName: "Manager"},
 		{TeamName: "Mentor"},
 		{TeamName: "Placement Team"},
@@ -50,7 +45,7 @@ func InitialTeamData(db *gorm.DB) {
 }
 
 func InitialUserData(db *gorm.DB) {
-	user := userRepo.User{
+	user := models.User{
 		TeamID:   1,
 		FullName: "John Doe",
 		Email:    "johndoe@mail.com",
@@ -65,7 +60,7 @@ func InitialUserData(db *gorm.DB) {
 }
 
 func InitialStatusData(db *gorm.DB) {
-	statuses := []statusRepo.Status{
+	statuses := []models.Status{
 		{StatusName: "Interview"},
 		{StatusName: "Join Class"},
 		{StatusName: "Unit 1"},

@@ -1,26 +1,26 @@
 package repository
 
-import (
-	"gorm.io/gorm"
+// import (
+// 	"gorm.io/gorm"
 
-	userModel "alta-immersive-dashboard/features/user/repository"
-)
+// 	userModel "alta-immersive-dashboard/features/user/repository"
+// )
 
-type Team struct {
-	gorm.Model
-	TeamName string           `gorm:"team_name;unique;not null"`
-	Users    []userModel.User `gorm:"foreignKey:TeamID"`
-}
+// type Team struct {
+// 	gorm.Model
+// 	TeamName string           `gorm:"team_name;unique;not null"`
+// 	Users    []userModel.User `gorm:"foreignKey:TeamID"`
+// }
 
-func EntityToModel(team TeamEntity) Team {
-	// Convert user entities to user models
-	var userModels []userModel.User
-	for _, user := range team.Users {
-		userModels = append(userModels, userModel.EntityToModel(user))
-	}
+// func EntityToModel(team TeamEntity) Team {
+// 	// Convert user entities to user models
+// 	var userModels []userModel.User
+// 	for _, user := range team.Users {
+// 		userModels = append(userModels, userModel.EntityToModel(user))
+// 	}
 
-	return Team{
-		TeamName: team.TeamName,
-		Users:    userModels,
-	}
-}
+// 	return Team{
+// 		TeamName: team.TeamName,
+// 		Users:    userModels,
+// 	}
+// }

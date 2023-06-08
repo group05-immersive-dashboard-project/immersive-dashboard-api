@@ -1,8 +1,6 @@
 package service
 
 import (
-	"alta-immersive-dashboard/features"
-	models "alta-immersive-dashboard/features"
 	userRepo "alta-immersive-dashboard/features/user/repository"
 	"errors"
 	"fmt"
@@ -16,14 +14,12 @@ type userService struct {
 }
 
 // CreateUser implements UserService.
-func (us *userService) CreateUser(user features.UserEntity) (uint, error) {
+func (us *userService) CreateUser(user userRepo.UserEntity) (uint, error) {
 	err := us.validate.Struct(user)
 	if err != nil {
 		validationErrors := err.(validator.ValidationErrors)
 		for _, e := range validationErrors {
 			switch e.Field() {
-			case "TeamID":
-				return 0, errors.New("error, team id is required")
 			case "FullName":
 				return 0, errors.New("error, name is required")
 			case "Email":
@@ -44,31 +40,57 @@ func (us *userService) CreateUser(user features.UserEntity) (uint, error) {
 
 // DeleteUser implements UserService.
 func (us *userService) DeleteUser(userID uint) error {
-	panic("unimplemented")
+	err := us.userRepository.Delete(userID)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	return nil
 }
 
 // GetAllUser implements UserService.
-func (us *userService) GetAllUser() ([]features.UserEntity, error) {
-	panic("unimplemented")
+func (us *userService) GetAllUser() ([]userRepo.UserEntity, error) {
+	userEntities, err := us.userRepository.SelectAll()
+	if err != nil {
+		return nil, fmt.Errorf("error: %v", err)
+	}
+
+	return userEntities, nil
 }
 
 // GetUser implements UserService.
-func (us *userService) GetUser(userID uint) (features.UserEntity, error) {
+func (us *userService) GetUser(userID uint) (userRepo.UserEntity, error) {
 	userEntity, err := us.userRepository.Select(userID)
 	if err != nil {
-		return models.UserEntity{}, fmt.Errorf("error: %v", err)
+		return userRepo.UserEntity{}, fmt.Errorf("error: %v", err)
 	}
 	return userEntity, nil
 }
 
 // Login implements UserService.
-func (us *userService) Login(email string, password string) (features.UserEntity, string, error) {
-	panic("unimplemented")
+func (us *userService) Login(email string, password string) (userRepo.UserEntity, string, error) {
+	if email == "" {
+		return userRepo.UserEntity{}, "", errors.New("email is required")
+	} else if password == "" {
+		return userRepo.UserEntity{}, "", errors.New("password is required")
+	}
+
+	loggedInUser, accessToken, err := us.userRepository.Login(email, password)
+	if err != nil {
+		return userRepo.UserEntity{}, "", err
+	}
+
+	return loggedInUser, accessToken, nil
 }
 
 // UpdateUser implements UserService.
-func (us *userService) UpdateUser(userID uint, updatedUser features.UserEntity) error {
-	panic("unimplemented")
+func (us *userService) UpdateUser(userID uint, updatedUser userRepo.UserEntity) error {
+	err := us.userRepository.Update(userID, updatedUser)
+	if err != nil {
+		return fmt.Errorf("error: %v", err)
+	}
+
+	return nil
 }
 
 func New(repo userRepo.UserRepository) UserService {
