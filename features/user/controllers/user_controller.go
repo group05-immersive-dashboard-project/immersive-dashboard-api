@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -178,6 +179,17 @@ func (uc *userController) LoginUser(c echo.Context) error {
 			return c.JSON(http.StatusInternalServerError, utils.FailResponse("internal server error", nil))
 		}
 	}
+
+	// Create a new cookie
+	cookie := &http.Cookie{
+		Name:     "jwt_token",
+		Value:    token,
+		Expires:  time.Now().Add(24 * time.Hour), // Set expiration time for the cookie
+		HttpOnly: true,                           // Ensure the cookie is only accessible via HTTP(S)
+	}
+
+	// Set the cookie in the response
+	c.SetCookie(cookie)
 
 	response := map[string]interface{}{
 		"email":   user.Email,
