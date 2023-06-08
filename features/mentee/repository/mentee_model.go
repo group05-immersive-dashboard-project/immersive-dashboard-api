@@ -24,7 +24,7 @@ type Mentee struct {
 	Institution     string                   `gorm:"column:institution"`
 	EmergencyName   string                   `gorm:"column:emergency_name"`
 	EmergencyPhone  string                   `gorm:"column:emergency_phone;unique"`
-	EmergencyStatus string                   `gorm:"type:enum('parent','grandparents', 'parents brother');default:'parent';column:emergency_status;not null"`
+	EmergencyStatus string                   `gorm:"type:enum('parent','grandparents', 'siblings');default:'parent';column:emergency_status;not null"`
 	Feedbacks       []feedbackModel.Feedback `gorm:"foreignKey:MenteeID"`
 }
 
