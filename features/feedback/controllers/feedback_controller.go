@@ -38,8 +38,9 @@ func (fc *feedbackController) CreateFeedback(c echo.Context) error {
 		}
 	}
 	feedback.ID = feedbackID
+	feedbackResponse := EntityToFeedbackResponse(feedback)
 
-	return c.JSON(http.StatusOK, utils.SuccessResponse("mentee created successfully", feedback))
+	return c.JSON(http.StatusOK, utils.SuccessResponse("mentee created successfully", feedbackResponse))
 }
 
 func (fc *feedbackController) UpdateFeedback(c echo.Context) error {
@@ -49,7 +50,7 @@ func (fc *feedbackController) UpdateFeedback(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, utils.FailResponse("failed to bind feedback data", nil))
 	}
 
-	idParam := c.Param("feedback_id")
+	idParam := c.Param("feedbacks_id")
 	feedbackID, err := strconv.Atoi(idParam)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, utils.FailResponse("invalid feedback ID", nil))
@@ -65,12 +66,13 @@ func (fc *feedbackController) UpdateFeedback(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, utils.FailResponse("feedback not found", nil))
 	}
+	feebackResponse := EntityToFeedbackResponse(feedback)
 
-	return c.JSON(http.StatusOK, utils.SuccessResponse("feedback updated successfully", feedback))
+	return c.JSON(http.StatusOK, utils.SuccessResponse("feedback updated successfully", feebackResponse))
 }
 
 func (fc *feedbackController) DeleteFeedback(c echo.Context) error {
-	idParam := c.Param("feedback_id")
+	idParam := c.Param("feedbacks_id")
 	feedbackID, err := strconv.Atoi(idParam)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, utils.FailResponse("invalid feedback ID", nil))
@@ -86,6 +88,7 @@ func (fc *feedbackController) DeleteFeedback(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, utils.FailResponse(err.Error(), nil))
 	}
+	feebackResponse := EntityToFeedbackResponse(feedback)
 
-	return c.JSON(http.StatusOK, utils.SuccessResponse("mentee deleted successfully", feedback))
+	return c.JSON(http.StatusOK, utils.SuccessResponse("feedback deleted successfully", feebackResponse))
 }

@@ -71,7 +71,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	feedbacksGroup := e.Group("/feedbacks")
 	{
 		feedbacksGroup.POST("", feedbackHandlerAPI.CreateFeedback, middlewares.JWTMiddlewareFunc())
-		feedbacksGroup.PUT("", feedbackHandlerAPI.UpdateFeedback, middlewares.JWTMiddlewareFunc())
-		feedbacksGroup.DELETE("", feedbackHandlerAPI.DeleteFeedback, middlewares.JWTMiddlewareFunc())
+		feedbacksGroup.PUT("/:feedbacks_id", feedbackHandlerAPI.UpdateFeedback, middlewares.JWTMiddlewareFunc())
+		feedbacksGroup.DELETE("/:feedbacks_id", feedbackHandlerAPI.DeleteFeedback, middlewares.JWTMiddlewareFunc())
 	}
 }
